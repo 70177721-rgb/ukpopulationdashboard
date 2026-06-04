@@ -457,16 +457,67 @@ body::after{
 .section-block{transition:opacity .25s,transform .25s}
 .section-block.hidden{display:none}
 
+/* ── MOBILE RESPONSIVE ── */
 @media(max-width:900px){
   .g2,.g3,.g3b{grid-template-columns:1fr}
-  .ins-g{grid-template-columns:1fr}
+  .ins-g{grid-template-columns:1fr 1fr}
   .kpi-g{grid-template-columns:repeat(2,1fr)}
-  .main{padding:14px 16px}
+  .main{padding:12px 14px}
+  .hdr{padding:12px 16px}
+  .hdr h1{font-size:17px}
+  .sec{font-size:9px;margin:24px 0 12px}
+  .ct{font-size:12px}
+  .cc{padding:14px 14px}
+  .kpi{padding:14px 16px}
+  .kpi-val{font-size:22px}
 }
-@media(max-width:480px){
-  .hdr{flex-direction:column;gap:10px;text-align:center}
+@media(max-width:600px){
+  /* Header */
+  .hdr{flex-direction:column;gap:8px;align-items:flex-start;padding:12px 14px}
+  .hdr-left{gap:10px}
+  .hdr h1{font-size:15px}
+  .hdr p{font-size:10px}
+  .hdr-badge{font-size:10px;padding:5px 11px;align-self:flex-start}
+
+  /* Filter bar: stack everything vertically */
+  .filter-bar{flex-direction:column;align-items:flex-start;gap:10px;padding:12px 14px}
+  .filter-divider{display:none}
+  .filter-chips{gap:6px}
+  .chip{font-size:10px;padding:5px 11px}
+  .filter-label{font-size:9px}
+  .filter-select{font-size:11px;width:100%}
+
+  /* KPIs: 2 per row on medium mobile */
+  .kpi-g{grid-template-columns:repeat(2,1fr);gap:9px}
+  .kpi{padding:12px 13px}
+  .kpi-val{font-size:20px}
+  .kpi-lbl{font-size:9px}
+  .kpi-sub{font-size:10px}
+
+  /* Insights: 1 per row */
+  .ins-g{grid-template-columns:1fr}
+
+  /* Charts */
+  .main{padding:10px 10px}
+  .cc{padding:12px 12px}
+  .ch{flex-direction:column;gap:6px;margin-bottom:12px}
+  .ctag{align-self:flex-start}
+  .ct{font-size:12px}
+  .cs{font-size:10px}
+
+  /* Table: make it scrollable */
+  .tbl{font-size:11px}
+  .tbl th,.tbl td{padding:8px 10px}
+  .cc:has(.tbl){overflow-x:auto}
+
+  /* Footer */
+  .ft{padding:16px 14px;font-size:10px}
+}
+@media(max-width:380px){
   .kpi-g{grid-template-columns:1fr}
-  .filter-bar{flex-direction:column;align-items:flex-start}
+  .hdr h1{font-size:13px}
+  .kpi-val{font-size:18px}
+  .filter-chips{flex-wrap:wrap}
 }
 </style>
 </head>
@@ -709,6 +760,16 @@ const D = __JSON_DATA__;
 function fmt(n){return n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n)}
 function fmtF(n){return n.toLocaleString('en-GB')}
 function pct(a,b){return(a/b*100).toFixed(1)+'%'}
+
+// Mobile: reduce canvas heights so charts don't overflow small screens
+const isMobile = window.innerWidth <= 600;
+if(isMobile){
+  document.querySelectorAll('canvas').forEach(c=>{
+    const h = parseInt(c.getAttribute('height')||'300');
+    c.setAttribute('height', Math.min(h, 200));
+  });
+  Chart.defaults.font.size = 10;
+}
 
 // ── KPIs
 document.getElementById('v-total').textContent    = fmtF(D.kpi.total_pop);
